@@ -77,6 +77,7 @@ impl<'s> System<'s> for CollisionSystem {
                     let offset = rock_pos - ship_pos;
                     if offset.norm() < (ship_radius + rock_radius) {
                         //collision!
+                        ents.delete(se).expect("error deleting entity");
                         ents.delete(re).expect("error deleting entity");
                     }
                 }
