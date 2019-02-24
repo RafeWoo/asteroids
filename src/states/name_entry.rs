@@ -37,7 +37,7 @@ pub struct NameEntryState {
 impl SimpleState for NameEntryState {
 
     fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
-        let world = data.world;
+        let _world = data.world;
 
 
         //init level
@@ -45,7 +45,7 @@ impl SimpleState for NameEntryState {
       println!("Entered name entry state");
     }
 
-    fn on_stop(&mut self, data: StateData<'_, GameData<'_, '_>>)
+    fn on_stop(&mut self, _data: StateData<'_, GameData<'_, '_>>)
     {
         //delete all the game entities
 /*

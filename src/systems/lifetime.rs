@@ -48,7 +48,7 @@ impl<'s> System<'s> for LifetimeSystem {
         ReadStorage<'s, Lifetime>,
     );
 
-    fn run(&mut self, (mut ents, lifetimes): Self::SystemData) {
+    fn run(&mut self, (ents, lifetimes): Self::SystemData) {
 
         let mut ents_to_delete = Vec::new();
 
@@ -60,7 +60,8 @@ impl<'s> System<'s> for LifetimeSystem {
         }
 
         for e in ents_to_delete{
-            ents.delete(e);
+            let _result = ents.delete(e);
+
         }
        
     }

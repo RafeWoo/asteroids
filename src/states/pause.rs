@@ -40,14 +40,14 @@ impl SimpleState for PauseState
 {
 
     fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
-        let world = data.world;
+        let _world = data.world;
 
         //set global pause flag
         //display paused text
       println!("Entered pause state");
     }
 
-    fn on_stop(&mut self, data: StateData<'_, GameData<'_, '_>>)
+    fn on_stop(&mut self, _data: StateData<'_, GameData<'_, '_>>)
     {
         //remove paused text
         //unset global pause flag
