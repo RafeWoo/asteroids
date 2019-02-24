@@ -10,6 +10,7 @@ use amethyst::{
 
 use crate::maths::*;
 use crate::game_constants::*;
+use crate::resources::PauseFlag;
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -100,27 +101,31 @@ impl<'s> System<'s> for MoveSystem {
     type SystemData = (
         WriteStorage<'s, Mover>,
         Read<'s, Time>,
+        Read<'s, PauseFlag>,
     );
 
 
 
-    fn run(&mut self, (mut movers, time): Self::SystemData) {
+    fn run(&mut self, (mut movers, time, pause_flag): Self::SystemData) {
         
-        let delta = time.delta_seconds();
-        
-        for mover in (&mut movers).join() {
+        if !pause_flag.is_paused() {
 
-            //update and clamp orientation
-            mover.angle_rad = angle_clamp( mover.angle_rad + mover.rot_vel * delta);
+            let delta = time.delta_seconds();
             
-            //update and clamp position
-            let speed = mover.vel.norm_squared();
-            if speed > MAX_SPEED * MAX_SPEED {
-                mover.vel = (mover.vel / speed.sqrt()) * MAX_SPEED;
-            }
-            let offset =  mover.vel * delta;
-            mover.pos += offset;
+            for mover in (&mut movers).join() {
 
+                //update and clamp orientation
+                mover.angle_rad = angle_clamp( mover.angle_rad + mover.rot_vel * delta);
+                
+                //update and clamp position
+                let speed = mover.vel.norm_squared();
+                if speed > MAX_SPEED * MAX_SPEED {
+                    mover.vel = (mover.vel / speed.sqrt()) * MAX_SPEED;
+                }
+                let offset =  mover.vel * delta;
+                mover.pos += offset;
+
+            }
         }
         
     }
@@ -134,17 +139,21 @@ impl<'s> System<'s> for UpdateSystem {
     type SystemData = (
         ReadStorage<'s, Mover>,
         WriteStorage<'s, Transform>,
+        Read<'s, PauseFlag>,
     );
 
-
+ 
     //Copy the Mover pos and orientation to the Transform
-    fn run(&mut self, ( movers, mut locals): Self::SystemData) {
+    fn run(&mut self, ( movers, mut locals, pause_flag): Self::SystemData) {
        
-        for (mover, local) in (&movers, &mut locals).join() {
+        if !pause_flag.is_paused() {
 
-            local.set_xyz( mover.pos.x, mover.pos.y , 0.0);
-            local.set_rotation_euler(0.0, 0.0, mover.angle_rad);
-     
+            for (mover, local) in (&movers, &mut locals).join() {
+
+                local.set_xyz( mover.pos.x, mover.pos.y , 0.0);
+                local.set_rotation_euler(0.0, 0.0, mover.angle_rad);
+        
+            }
         }
     }
 }
@@ -158,27 +167,30 @@ impl<'s> System<'s> for WrapSystem {
     type SystemData = (
         ReadStorage<'s, Wrapper>,
         WriteStorage<'s, Mover>,
+        Read<'s, PauseFlag>,
     );
 
     //Copy the Mover pos and orientation to the Transform
-    fn run(&mut self, ( wrappers, mut movers): Self::SystemData) {
+    fn run(&mut self, ( wrappers, mut movers, pause_flag): Self::SystemData) {
        
-        for (_, mover) in (&wrappers, &mut movers).join() {
+        if !pause_flag.is_paused() {
 
-            if mover.pos.x < 0.0 {
-                mover.pos.x += ARENA_WIDTH;
-            }
-            else if mover.pos.x > ARENA_WIDTH {
-                mover.pos.x -= ARENA_WIDTH;
-            }
+            for (_, mover) in (&wrappers, &mut movers).join() {
 
-            if mover.pos.y < 0.0 {
-                mover.pos.y += ARENA_HEIGHT;
+                if mover.pos.x < 0.0 {
+                    mover.pos.x += ARENA_WIDTH;
+                }
+                else if mover.pos.x > ARENA_WIDTH {
+                    mover.pos.x -= ARENA_WIDTH;
+                }
+
+                if mover.pos.y < 0.0 {
+                    mover.pos.y += ARENA_HEIGHT;
+                }
+                else if mover.pos.y > ARENA_HEIGHT {
+                    mover.pos.y -= ARENA_HEIGHT;
+                }
             }
-            else if mover.pos.y > ARENA_HEIGHT {
-                mover.pos.y -= ARENA_HEIGHT;
-            }
-     
         }
     }
 }

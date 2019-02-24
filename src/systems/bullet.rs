@@ -63,50 +63,55 @@ impl<'s> System<'s> for ShooterSystem {
         WriteStorage<'s, Bullet>,
         WriteStorage<'s, systems::Wrapper>,
         WriteStorage<'s, systems::Lifetime>,
+        WriteStorage<'s, systems::Bound>,
         Read<'s, InputHandler<String, String>>,
         ReadExpect<'s, resources::BulletResource>,
+        Read<'s, resources::PauseFlag>,
     );
 
     fn run(&mut self, 
-        (mut ents, mut movers, mut shooters, mut transforms, mut sprites, mut bullets, mut wrappers, mut lifetimes,
-    input, bullet_resource): Self::SystemData) 
+        (mut ents, mut movers, mut shooters, mut transforms, mut sprites, mut bullets, mut wrappers, mut lifetimes, mut bounds,
+    input, bullet_resource, pause_flag): Self::SystemData) 
     {
+        if !pause_flag.is_paused() {
 
-        if let Some(fire) = input.action_is_down("fire") {
+            if let Some(fire) = input.action_is_down("fire") {
 
-            if fire {
-            
-                let mut shot_fired = false;
-                let mut angle = 0.0f32;
-                let mut pos = Point2::new(0.0, 0.0);
-                let mut vel = Vector2::new(0.0, 0.0);
+                if fire {
+                
+                    let mut shot_fired = false;
+                    let mut angle = 0.0f32;
+                    let mut pos = Point2::new(0.0, 0.0);
+                    let mut vel = Vector2::new(0.0, 0.0);
 
-                for (mover, shooter) in (&mut movers, &mut shooters).join() {
+                    for (mover, shooter) in (&mut movers, &mut shooters).join() {
 
-                    if shooter.can_shoot() {
+                        if shooter.can_shoot() {
 
-                        angle = mover.orientation();
-                        pos = mover.position();
-                        vel = vector_from_angle(angle) * BULLET_SPEED;
-                      
-                       shot_fired = true;
-                       shooter.on_shot_fired();
-                       break;
+                            angle = mover.orientation();
+                            pos = mover.position();
+                            vel = vector_from_angle(angle) * BULLET_SPEED;
+                        
+                        shot_fired = true;
+                        shooter.on_shot_fired();
+                        break;
+                        }
                     }
-                }
 
-                if shot_fired {
-                 //spawn_shot
-                    spawn_bullet( pos, vel, angle,
-                        &bullet_resource,
-                        &mut ents, 
-                        &mut transforms,
-                        &mut sprites,
-                        &mut movers,
-                        &mut bullets,
-                        &mut wrappers,
-                        &mut lifetimes,
-                        );
+                    if shot_fired {
+                    //spawn_shot
+                        spawn_bullet( pos, vel, angle,
+                            &bullet_resource,
+                            &mut ents, 
+                            &mut transforms,
+                            &mut sprites,
+                            &mut movers,
+                            &mut bullets,
+                            &mut wrappers,
+                            &mut lifetimes,
+                            &mut bounds,
+                            );
+                    }
                 }
             }
         }
@@ -123,6 +128,7 @@ fn spawn_bullet<'s>( pos: Point2, vel: Vector2, angle: f32,
     mut bullets: &mut WriteStorage<'s, Bullet>,
     mut wrappers: &mut WriteStorage<'s, systems::Wrapper>,
     mut lifetimes: &mut WriteStorage<'s, systems::Lifetime>,
+    mut bounds: &mut WriteStorage<'s, systems::Bound>,
     ) ->Entity
 {
 
@@ -151,6 +157,7 @@ fn spawn_bullet<'s>( pos: Point2, vel: Vector2, angle: f32,
         .with( Bullet, &mut bullets)
         .with( systems::Wrapper, &mut wrappers)
         .with( systems::Lifetime::new(BULLET_LIFETIME_MS), &mut lifetimes)
+        .with( systems::Bound::new(BULLET_RADIUS), &mut bounds)
         .build()
 }
 //////////////////////////////////////////////////////////

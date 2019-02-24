@@ -52,9 +52,10 @@ impl SimpleState for LoadingState{
         load_rock_sprites(world);
         load_ship_resources(world);
         load_bullet_resources(world);
-        
+
         initialise_camera(world);
        
+        world.add_resource( resources::PauseFlag::new() );
     }
 
     fn on_stop(&mut self, data: StateData<'_, GameData<'_, '_>>){

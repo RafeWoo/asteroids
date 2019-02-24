@@ -51,11 +51,11 @@ impl SimpleState for GameState{
         let ship = entity::create_ship(world);
 
         for _ in 0..4 {
-            entity::create_rock(world, None);
+            entity::create_rock(world, 100. , None);
         }
     }
 
-    fn on_stop(&mut self, data: StateData<'_, GameData<'_, '_>>)
+    fn on_stop(&mut self, _data: StateData<'_, GameData<'_, '_>>)
     {
         //delete all the game entities
 /*

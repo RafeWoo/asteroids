@@ -10,6 +10,7 @@ use amethyst::{
 
 use crate::systems::moving::Mover;
 use crate::game_constants::*;
+use crate::resources::PauseFlag;
 
 #[derive(Default)]
 pub struct Ship;
@@ -30,46 +31,50 @@ impl<'s> System<'s> for ShipSystem {
         ReadStorage<'s, Ship>,
         Read<'s, InputHandler<String, String>>,
         Read<'s, Time>,
+        Read<'s, PauseFlag>,
     );
 
-    fn run(&mut self, (mut movers, mut sprites, ships, input, time): Self::SystemData) {
+    fn run(&mut self, (mut movers, mut sprites, ships, input, time, pause): Self::SystemData) {
 
-        let time_delta:f32 = time.delta_seconds();
+        if !pause.is_paused() {
 
-        if let Some(rotation) = input.axis_value("rotate") {
+            let time_delta:f32 = time.delta_seconds();
 
-            let rotate_amount = rotation as f32 * time_delta * PLAYER_ROT_SPEED;
-            for (mover, _) in (&mut movers, &ships).join() {
+            if let Some(rotation) = input.axis_value("rotate") {
 
-                mover.inc_orientation( rotate_amount );
-
-            }
-        }
-
-        if let Some( thrust ) = input.axis_value("thrust") {
-    
-            
-            let impulse = thrust as f32; 
-            if impulse > 0.0 {
-                let acc = impulse * time_delta * PLAYER_ACC;
-
+                let rotate_amount = rotation as f32 * time_delta * PLAYER_ROT_SPEED;
                 for (mover, _) in (&mut movers, &ships).join() {
-                    mover.accelerate_forwards( acc );
-                }
 
-                //show thrusters
-                for (sprite, _) in (&mut sprites, &ships).join() {
-                    sprite.sprite_number = SHIP_SPRITE_FLAME;
+                    mover.inc_orientation( rotate_amount );
+
                 }
             }
-            else
-            {
-                //hide thrusters
-                for (sprite, _) in (&mut sprites, &ships).join() {
-                    sprite.sprite_number = SHIP_SPRITE;
+
+            if let Some( thrust ) = input.axis_value("thrust") {
+        
+                
+                let impulse = thrust as f32; 
+                if impulse > 0.0 {
+                    let acc = impulse * time_delta * PLAYER_ACC;
+
+                    for (mover, _) in (&mut movers, &ships).join() {
+                        mover.accelerate_forwards( acc );
+                    }
+
+                    //show thrusters
+                    for (sprite, _) in (&mut sprites, &ships).join() {
+                        sprite.sprite_number = SHIP_SPRITE_FLAME;
+                    }
                 }
+                else
+                {
+                    //hide thrusters
+                    for (sprite, _) in (&mut sprites, &ships).join() {
+                        sprite.sprite_number = SHIP_SPRITE;
+                    }
+                }
+    
             }
-  
         }
 
     }

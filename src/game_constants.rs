@@ -18,6 +18,12 @@ pub const PLAYER_SHOT_TIME_MS: u64 = 500; //milliseconds between shots
 
 pub const SHIP_SPRITE: usize = 0;
 pub const SHIP_SPRITE_FLAME: usize = 1;
+pub const SHIP_RADIUS: f32 = 20.0; 
 
 pub const BULLET_SPEED: f32 = 500.0;
 pub const BULLET_LIFETIME_MS: u64 = 2000; //milliseconds of life before dying
+pub const BULLET_RADIUS: f32 = 8.0; 
+
+pub const ROCK_RADIUS_BIG: f32 = 60.0;
+pub const ROCK_RADIUS_MEDIUM: f32 = 30.0;
+pub const ROCK_RADIUS_SMALL: f32 = 15.0;

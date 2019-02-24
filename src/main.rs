@@ -63,6 +63,7 @@ fn main() -> amethyst::Result<()> {
         .with(systems::MoveSystem, "move_system", &[])
         .with(systems::WrapSystem, "wrap_system", &["move_system"])
         .with(systems::UpdateSystem, "update_system", &["move_system", "wrap_system"])
+        .with(systems::CollisionSystem, "collision_system", &["update_system"])
         ;
    
 

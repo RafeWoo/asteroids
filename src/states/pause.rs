@@ -6,24 +6,20 @@
 //! Display "Paused" on Screen
 //! set a paused flag
 use amethyst::{
-    assets::{AssetStorage, Loader},
-    core::transform::Transform,
-    ecs::prelude::{Component, DenseVecStorage,Entity},
+    ecs::prelude::*,
     input::is_key_down,
     prelude::*,
-    renderer::{
-        Camera, Flipped, PngFormat, Projection, SpriteRender, SpriteSheet,
-        SpriteSheetFormat, SpriteSheetHandle, Texture, TextureMetadata,VirtualKeyCode,
-    },
-    ui::{Anchor, TtfFormat, UiText, UiTransform},
+    renderer::VirtualKeyCode,
+    ui::{Anchor, TtfFormat, UiText, UiTransform, FontHandle},
 };
-use std::time::{Duration, Instant};
 
-use crate::game_constants::{ ARENA_WIDTH, ARENA_HEIGHT,};
+
+use crate::game_constants::*;
+use crate::resources;
 
 pub struct PauseState
 {
-
+    message: Option<Entity>,
 }
 
 impl PauseState
@@ -31,27 +27,59 @@ impl PauseState
     pub fn new() -> PauseState
     {
         PauseState{
-
+            message: None,
         }
     }
+}
+
+fn display_pause_message(world: &mut World)->Entity
+{
+    let font_handle = world.read_resource::<FontHandle>().clone();
+        
+    let message_transform = UiTransform::new(
+        "MESSAGE".to_string(), Anchor::Middle,
+        0., 0., 1., 
+        600., 100., 
+        0,
+    );
+  
+
+    world.create_entity()
+        .with( message_transform )
+        .with( UiText::new(
+            font_handle,
+            "PAUSED".to_string(),
+            COLOUR_WHITE,
+            50.,
+        )).build()
 }
 
 impl SimpleState for PauseState
 {
 
     fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
-        let _world = data.world;
+        let world = data.world;
 
         //set global pause flag
+        world.write_resource::<resources::PauseFlag>().toggle_paused();
+
         //display paused text
-      println!("Entered pause state");
+        self.message = Some( display_pause_message(world));
+
+      
     }
 
-    fn on_stop(&mut self, _data: StateData<'_, GameData<'_, '_>>)
+    fn on_stop(&mut self, data: StateData<'_, GameData<'_, '_>>)
     {
+        let world = data.world;
         //remove paused text
+        if let Some(message_entity) = self.message {
+            world.delete_entity( message_entity ).expect("failed to delete message");
+            self.message = None;
+        }
         //unset global pause flag
-        println!("Leaving pause state");
+        world.write_resource::<resources::PauseFlag>().toggle_paused();
+        
     }
 
     fn handle_event(&mut self, _data: StateData<'_, GameData<'_, '_>>, event: StateEvent) -> SimpleTrans 

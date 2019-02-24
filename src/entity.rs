@@ -21,7 +21,7 @@ use crate::resources;
 use crate::systems;
 use crate::maths::*;
 
-pub fn create_rock(world: &mut World , parent: Option<Entity>)->Entity
+pub fn create_rock(world: &mut World , max_speed: f32, parent: Option<Entity>)->Entity
 {
     let mut rng = rand::thread_rng();
 
@@ -48,7 +48,7 @@ pub fn create_rock(world: &mut World , parent: Option<Entity>)->Entity
         let y_pos = vec.y;
         transform.set_xyz(x_pos, y_pos, 0.0);
 
-        let speed = rng.gen_range( MIN_ROCK_SPEED, MAX_SPEED);
+        let speed = rng.gen_range( MIN_ROCK_SPEED, max_speed);
         let v_angle = rng.gen_range( -PI, PI);
         let vel = vector_from_angle( v_angle ) * speed;
         let rot_vel = rng.gen_range( 0.1, 0.5);
@@ -63,6 +63,8 @@ pub fn create_rock(world: &mut World , parent: Option<Entity>)->Entity
             .with(transform)
             .with( mover )
             .with( systems::Wrapper )
+            .with( systems::Rock )
+            .with( systems::Bound::new( ROCK_RADIUS_BIG ) )
             ;
 
         if let Some( entity ) = parent{
@@ -103,5 +105,6 @@ pub fn create_ship(world: &mut World)->Entity
         .with( systems::Wrapper )
         .with( systems::Ship )
         .with( systems::Shooter::new() )
+        .with( systems::Bound::new( SHIP_RADIUS) )
         .build()
 }

@@ -77,7 +77,7 @@ impl SimpleState for StartState{
         self.message = Some( message_entity.clone() );
 
         for _ in 0..4 {
-            entity::create_rock(world, Some(message_entity.clone()));   
+            entity::create_rock(world, 150., Some(message_entity.clone()));   
         }
         
     }
