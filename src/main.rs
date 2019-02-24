@@ -4,6 +4,8 @@
 //! 
 mod states;
 mod game_constants;
+mod entity;
+mod resources;
  
 use amethyst::{
     prelude::*,

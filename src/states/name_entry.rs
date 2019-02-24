@@ -23,7 +23,7 @@ use std::time::{Duration, Instant};
 
 use crate::game_constants::{ ARENA_WIDTH, ARENA_HEIGHT,};
 
-use crate::states::loading::RockSpriteSheet;
+use crate::resources;
 use crate::states::{
     ScoresState,
 };

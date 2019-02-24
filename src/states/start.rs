@@ -6,7 +6,7 @@
 
 use amethyst::{
     assets::{AssetStorage, Loader},
-    core::transform::Transform,
+    core::transform::{ Transform, Parent, },
     ecs::prelude::{Component, DenseVecStorage,Entity},
     input::is_key_down,
     prelude::*,
@@ -20,7 +20,7 @@ use std::time::{Duration, Instant};
 
 use crate::game_constants::{ ARENA_WIDTH, ARENA_HEIGHT, COLOUR_WHITE};
 
-use crate::states::loading::RockSpriteSheet;
+use crate::resources;
 use crate::states::
 {
     GameState,
@@ -72,11 +72,12 @@ impl SimpleState for StartState{
 
         self.start_time = Instant::now();
 
-        self.message = Some( display_start_message(world) );
+        let message_entity = display_start_message(world);
+        self.message = Some( message_entity.clone() );
 ////////////////////////////////////////////////
         let sprite_render = 
         {
-           let bob =  world.read_resource::<RockSpriteSheet>();
+           let bob =  world.read_resource::<resources::RocksResource>();
     
             SpriteRender {
                 sprite_sheet: bob.sprite_sheet.clone(),
@@ -91,6 +92,7 @@ impl SimpleState for StartState{
         .create_entity()
         .with(sprite_render)
         .with(transform)
+        .with( Parent{ entity: message_entity} )
         .build();
     }
 

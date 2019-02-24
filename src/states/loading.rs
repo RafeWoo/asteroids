@@ -20,6 +20,7 @@ use std::time::{Duration, Instant};
 
 use crate::game_constants::{ ARENA_WIDTH, ARENA_HEIGHT, COLOUR_WHITE};
 use crate::states::StartState;
+use crate::resources;
 
 pub struct LoadingState
 {
@@ -75,11 +76,7 @@ impl SimpleState for LoadingState{
     }
 }
 
-//movr to separate module Resources
-pub struct RockSpriteSheet
-{
-    pub sprite_sheet : SpriteSheetHandle,
-}
+
 
 
 fn load_font(world: &mut World)
@@ -128,7 +125,7 @@ fn load_rock_sprites(world: &mut World)
 { 
     let sprite_sheet = load_sprite_sheet(world, "rocks");
     
-    world.add_resource( RockSpriteSheet{sprite_sheet} );
+    world.add_resource( resources::RocksResource{sprite_sheet} );
 }
 
 fn load_loading_screen(world: &mut World)->Entity

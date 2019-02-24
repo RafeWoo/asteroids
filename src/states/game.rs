@@ -19,7 +19,7 @@ use std::time::{Duration, Instant};
 
 use crate::game_constants::{ ARENA_WIDTH, ARENA_HEIGHT,};
 
-use crate::states::loading::RockSpriteSheet;
+use crate::resources::RocksResource;
 use crate::states::{
     NameEntryState,
     PauseState,
@@ -50,7 +50,7 @@ impl SimpleState for GameState{
 
         let sprite_render = 
         {
-           let bob =  world.read_resource::<RockSpriteSheet>();
+           let bob =  world.read_resource::<RocksResource>();
     
             SpriteRender {
                 sprite_sheet: bob.sprite_sheet.clone(),
