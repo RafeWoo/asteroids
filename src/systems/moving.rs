@@ -27,7 +27,7 @@ impl Mover{
             pos: Point2::new(x,y),
             vel: Vector2::new(0.0,0.0),
             angle_rad: 0.0,
-            rot_vel: 0.4,
+            rot_vel: 0.0,
         }
     }
 
@@ -37,6 +37,24 @@ impl Mover{
             vel, 
             angle_rad: self.angle_rad,
             rot_vel: self.rot_vel,
+        }
+    }
+
+    pub fn with_orientation(self, angle: f32)->Mover{
+        Mover{
+            pos: self.pos,
+            vel: self.vel,
+            angle_rad: angle,
+            rot_vel: self.rot_vel,
+        }
+    }
+
+    pub fn with_rot_velocity(self, rot_vel: f32)->Mover{
+        Mover{
+            pos: self.pos,
+            vel: self.vel,
+            angle_rad: self.angle_rad,
+            rot_vel,
         }
     }
 }
@@ -75,7 +93,11 @@ impl<'s> System<'s> for MoveSystem {
             //update and clamp orientation
             mover.angle_rad = angle_clamp( mover.angle_rad + mover.rot_vel * delta);
             
-            //todo clamp speed to maximum
+            //update and clamp position
+            let speed = mover.vel.norm_squared();
+            if speed > MAX_SPEED * MAX_SPEED {
+                mover.vel = (mover.vel / speed.sqrt()) * MAX_SPEED;
+            }
             let offset =  mover.vel * delta;
             mover.pos += offset;
 

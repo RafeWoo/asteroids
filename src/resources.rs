@@ -16,3 +16,8 @@ pub struct RocksResource
 {
     pub sprite_sheet : SpriteSheetHandle,
 }
+
+pub struct ShipResource
+{
+    pub sprite_sheet : SpriteSheetHandle,
+}

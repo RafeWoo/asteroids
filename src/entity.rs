@@ -53,7 +53,11 @@ pub fn create_rock(world: &mut World , parent: Option<Entity>)->Entity
         let speed = rng.gen_range( MIN_ROCK_SPEED, MAX_SPEED);
         let v_angle = rng.gen_range( -PI, PI);
         let vel = vector_from_angle( v_angle ) * speed;
-        let mover = systems::Mover::new( x_pos, y_pos).with_velocity( vel );
+        let rot_vel = rng.gen_range( 0.1, 0.5);
+        let mover = systems::Mover::new( x_pos, y_pos)
+                        .with_velocity( vel )
+                        .with_orientation(angle)
+                        .with_rot_velocity(rot_vel);
 
         let mut builder =  world
             .create_entity()
@@ -67,4 +71,36 @@ pub fn create_rock(world: &mut World , parent: Option<Entity>)->Entity
         }
             
         builder.build()
+}
+
+
+
+pub fn create_ship(world: &mut World)->Entity
+{
+    let sprite_render = 
+    {
+        let ship_resource =  world.read_resource::<resources::ShipResource>();
+        let ship_number = 0;
+
+        SpriteRender {
+            sprite_sheet: ship_resource.sprite_sheet.clone(),
+            sprite_number: ship_number, 
+        }
+    };
+
+
+    let mut transform = Transform::default();
+    let x_pos = ARENA_WIDTH * 0.5;
+    let y_pos = ARENA_HEIGHT * 0.5;
+    transform.set_xyz(x_pos, y_pos, 0.0);
+
+    let mover = systems::Mover::new( x_pos, y_pos);
+
+    world
+        .create_entity()
+        .with(sprite_render)
+        .with(transform)
+        .with( mover )
+        .with( systems::Wrapper )
+        .build()
 }

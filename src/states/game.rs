@@ -13,11 +13,12 @@ use amethyst::{
         Camera, Flipped, PngFormat, Projection, SpriteRender, SpriteSheet,
         SpriteSheetFormat, SpriteSheetHandle, Texture, TextureMetadata,VirtualKeyCode,
     },
-    ui::{Anchor, TtfFormat, UiText, UiTransform},
+    ui::{Anchor, TtfFormat, UiText, UiTransform, FontHandle},
 };
 use std::time::{Duration, Instant};
 
-use crate::game_constants::{ ARENA_WIDTH, ARENA_HEIGHT,};
+use crate::game_constants::*;
+use crate::entity;
 
 use crate::resources::RocksResource;
 use crate::states::{
@@ -47,25 +48,11 @@ impl SimpleState for GameState{
 
 
         //init level
+        let ship = entity::create_ship(world);
 
-        let sprite_render = 
-        {
-           let bob =  world.read_resource::<RocksResource>();
-    
-            SpriteRender {
-                sprite_sheet: bob.sprite_sheet.clone(),
-                sprite_number: 0, 
-            }
-        };
-
-        let mut transform = Transform::default();
-        transform.set_xyz(0.0, ARENA_HEIGHT * 0.5, 0.0);
-
-         world
-        .create_entity()
-        .with(sprite_render)
-        .with(transform)
-        .build();
+        for _ in 0..4 {
+            entity::create_rock(world, None);
+        }
     }
 
     fn on_stop(&mut self, data: StateData<'_, GameData<'_, '_>>)
@@ -118,4 +105,34 @@ impl SimpleState for GameState{
           
         transition
     }
+}
+
+//MOve to game state
+//need lives as well
+/// ScoreText contains the ui text components that display the score
+pub struct ScoreText {
+    pub player_score: Entity,
+}
+/// Initialises a ui scoreboard
+fn initialise_ui(world: &mut World) {
+    let font_handle = world.read_resource::<FontHandle>().clone();
+
+
+    let score_transform = UiTransform::new(
+        "SCORE".to_string(), Anchor::TopMiddle,
+        -50., -50., 1., 200., 50., 0,
+    );
+  
+
+    let player_score = world
+        .create_entity()
+        .with(score_transform)
+        .with(UiText::new(
+            font_handle,
+            "0".to_string(),
+            COLOUR_WHITE,
+            50.,
+        )).build();
+
+    world.add_resource(ScoreText { player_score });
 }

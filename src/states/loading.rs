@@ -50,8 +50,9 @@ impl SimpleState for LoadingState{
        
         load_font(world);
         load_rock_sprites(world);
+        load_ship_resources(world);
         initialise_camera(world);
-        initialise_ui(world);
+       
     }
 
     fn on_stop(&mut self, data: StateData<'_, GameData<'_, '_>>){
@@ -67,7 +68,7 @@ impl SimpleState for LoadingState{
     {
         let mut transition = Trans::None;
  
-        if Instant::now().duration_since( self.start_time ) > Duration::from_secs(1)
+        if Instant::now().duration_since( self.start_time ) > Duration::from_secs(5)
         {
             transition = Trans::Switch( Box::new( StartState::new() ) );
         }
@@ -128,6 +129,12 @@ fn load_rock_sprites(world: &mut World)
     world.add_resource( resources::RocksResource{sprite_sheet} );
 }
 
+fn load_ship_resources(world: &mut World)
+{
+    let sprite_sheet = load_sprite_sheet(world,"ship");
+    world.add_resource( resources::ShipResource{sprite_sheet} );
+}
+
 fn load_loading_screen(world: &mut World)->Entity
 {
     let sprite_sheet = load_sprite_sheet(world, "loading");
@@ -165,39 +172,9 @@ fn initialise_camera(world: &mut World) {
 }
 
 
-//MOve to game state
-//need lives as well
-/// ScoreText contains the ui text components that display the score
-pub struct ScoreText {
-    pub player_score: Entity,
-}
-/// Initialises a ui scoreboard
-fn initialise_ui(world: &mut World) {
-    let font_handle = world.read_resource::<FontHandle>().clone();
 
-
-    let score_transform = UiTransform::new(
-        "SCORE".to_string(), Anchor::TopMiddle,
-        -50., -50., 1., 200., 50., 0,
-    );
-  
-
-    let player_score = world
-        .create_entity()
-        .with(score_transform)
-        .with(UiText::new(
-            font_handle,
-            "0".to_string(),
-            COLOUR_WHITE,
-            50.,
-        )).build();
-
-    world.add_resource(ScoreText { player_score });
-}
 
 /*
-
-
 
 
 //Create a ScoreBoard resource
