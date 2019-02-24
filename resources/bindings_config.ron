@@ -3,5 +3,7 @@
     "rotate": Emulated(pos: Key(Left), neg: Key(Right)),
     "thrust": Emulated(pos: Key(Up), neg: Key(Down)),
   },
-  actions: {},
+  actions: {
+    "fire": [ [Key(Space)] ],
+  },
 )

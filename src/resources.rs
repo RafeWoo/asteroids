@@ -21,3 +21,8 @@ pub struct ShipResource
 {
     pub sprite_sheet : SpriteSheetHandle,
 }
+
+pub struct BulletResource
+{
+    pub sprite_sheet : SpriteSheetHandle,
+}

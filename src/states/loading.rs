@@ -51,6 +51,8 @@ impl SimpleState for LoadingState{
         load_font(world);
         load_rock_sprites(world);
         load_ship_resources(world);
+        load_bullet_resources(world);
+        
         initialise_camera(world);
        
     }
@@ -133,6 +135,12 @@ fn load_ship_resources(world: &mut World)
 {
     let sprite_sheet = load_sprite_sheet(world,"ship");
     world.add_resource( resources::ShipResource{sprite_sheet} );
+}
+
+fn load_bullet_resources(world: &mut World)
+{
+    let sprite_sheet = load_sprite_sheet( world, "bullet");
+    world.add_resource( resources::BulletResource{sprite_sheet} );
 }
 
 fn load_loading_screen(world: &mut World)->Entity

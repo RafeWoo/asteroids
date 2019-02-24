@@ -68,6 +68,15 @@ impl Mover{
         let acc_vec = vector_from_angle( self.angle_rad) * acceleration;
         self.vel += acc_vec;
     }
+
+    pub fn orientation(&self)->f32{
+        self.angle_rad
+    }
+
+    pub fn position(&self)->Point2
+    {
+        self.pos
+    }
 }
 
 impl Component for Mover {

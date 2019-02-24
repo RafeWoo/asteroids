@@ -12,8 +12,12 @@ pub const EXCLUSION_ZONE_RADIUS: f32 = 150.0;
 pub const MIN_ROCK_SPEED: f32 = 5.0;
 pub const MAX_SPEED: f32 = 800.0;
 
-pub const PLAYER_ROT_SPEED: f32 = 2.0; //rad/s
+pub const PLAYER_ROT_SPEED: f32 = 3.12; //rad/s
 pub const PLAYER_ACC: f32 = 200.0; //pixels/s-2
+pub const PLAYER_SHOT_TIME_MS: u64 = 500; //milliseconds between shots
 
 pub const SHIP_SPRITE: usize = 0;
 pub const SHIP_SPRITE_FLAME: usize = 1;
+
+pub const BULLET_SPEED: f32 = 500.0;
+pub const BULLET_LIFETIME_MS: u64 = 2000; //milliseconds of life before dying

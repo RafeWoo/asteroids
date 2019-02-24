@@ -71,5 +71,6 @@ impl<'s> System<'s> for ShipSystem {
             }
   
         }
+
     }
 }

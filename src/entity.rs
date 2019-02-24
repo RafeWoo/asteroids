@@ -27,9 +27,7 @@ pub fn create_rock(world: &mut World , parent: Option<Entity>)->Entity
 
         let sprite_render = 
         {
-            let rocks =  world.read_resource::<resources::RocksResource>();
-
-            
+            let rocks =  world.read_resource::<resources::RocksResource>(); 
             let rock_number = rng.gen_range(0,3);
 
             SpriteRender {
@@ -64,7 +62,8 @@ pub fn create_rock(world: &mut World , parent: Option<Entity>)->Entity
             .with(sprite_render)
             .with(transform)
             .with( mover )
-            .with( systems::Wrapper );
+            .with( systems::Wrapper )
+            ;
 
         if let Some( entity ) = parent{
             builder = builder.with( Parent{ entity } );
@@ -103,5 +102,6 @@ pub fn create_ship(world: &mut World)->Entity
         .with( mover )
         .with( systems::Wrapper )
         .with( systems::Ship )
+        .with( systems::Shooter::new() )
         .build()
 }
