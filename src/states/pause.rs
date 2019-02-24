@@ -2,6 +2,9 @@
 //! 
 //! Can go to gameplay state
 //! Waiting for player to press unpause key
+//! 
+//! Display "Paused" on Screen
+//! set a paused flag
 use amethyst::{
     assets::{AssetStorage, Loader},
     core::transform::Transform,

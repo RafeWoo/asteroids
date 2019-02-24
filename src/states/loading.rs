@@ -14,11 +14,11 @@ use amethyst::{
         Camera, Flipped, PngFormat, Projection, SpriteRender, SpriteSheet,
         SpriteSheetFormat, SpriteSheetHandle, Texture, TextureMetadata,
     },
-    ui::{Anchor, TtfFormat, UiText, UiTransform},
+    ui::{Anchor, TtfFormat, UiText, UiTransform, FontHandle},
 };
 use std::time::{Duration, Instant};
 
-use crate::game_constants::{ ARENA_WIDTH, ARENA_HEIGHT,};
+use crate::game_constants::{ ARENA_WIDTH, ARENA_HEIGHT, COLOUR_WHITE};
 use crate::states::StartState;
 
 pub struct LoadingState
@@ -47,6 +47,7 @@ impl SimpleState for LoadingState{
 
         self.loading_screen_handle = Some(load_loading_screen(world));
        
+        load_font(world);
         load_rock_sprites(world);
         initialise_camera(world);
         initialise_ui(world);
@@ -63,14 +64,14 @@ impl SimpleState for LoadingState{
 
     fn fixed_update(&mut self, _data: StateData<'_, GameData<'_, '_>>) -> SimpleTrans
     {
-        //let mut transition = Trans::None;
+        let mut transition = Trans::None;
  
-        if Instant::now().duration_since( self.start_time ) > Duration::from_secs(5)
+        if Instant::now().duration_since( self.start_time ) > Duration::from_secs(1)
         {
-            return Trans::Switch( Box::new( StartState::new() ) );
+            transition = Trans::Switch( Box::new( StartState::new() ) );
         }
 
-        Trans::None
+        transition
     }
 }
 
@@ -80,6 +81,19 @@ pub struct RockSpriteSheet
     pub sprite_sheet : SpriteSheetHandle,
 }
 
+
+fn load_font(world: &mut World)
+{
+     let font_handle = world.read_resource::<Loader>().load(
+        "font/square.ttf",
+        TtfFormat,
+        Default::default(),
+        (),
+        &world.read_resource(),
+    );
+
+    world.add_resource( font_handle );
+}
 
 fn load_sprite_sheet(world: &mut World, name: &str)->SpriteSheetHandle
 {
@@ -130,7 +144,7 @@ fn load_loading_screen(world: &mut World)->Entity
     screen_transform.set_xyz(ARENA_HEIGHT * 0.5, ARENA_HEIGHT * 0.5, 0.0);
   
 
-    // Create the loading screen entity
+    // Create and return the loading screen entity
     world
         .create_entity()
         .with(sprite_render.clone())
@@ -162,13 +176,9 @@ pub struct ScoreText {
 }
 /// Initialises a ui scoreboard
 fn initialise_ui(world: &mut World) {
-    let font = world.read_resource::<Loader>().load(
-        "font/square.ttf",
-        TtfFormat,
-        Default::default(),
-        (),
-        &world.read_resource(),
-    );
+    let font_handle = world.read_resource::<FontHandle>().clone();
+
+
     let score_transform = UiTransform::new(
         "SCORE".to_string(), Anchor::TopMiddle,
         -50., -50., 1., 200., 50., 0,
@@ -179,9 +189,9 @@ fn initialise_ui(world: &mut World) {
         .create_entity()
         .with(score_transform)
         .with(UiText::new(
-            font.clone(),
+            font_handle,
             "0".to_string(),
-            [1., 1., 1., 1.],
+            COLOUR_WHITE,
             50.,
         )).build();
 
