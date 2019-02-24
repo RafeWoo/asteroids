@@ -6,6 +6,8 @@ mod states;
 mod game_constants;
 mod entity;
 mod resources;
+mod systems;
+mod maths;
  
 use amethyst::{
     prelude::*,
@@ -15,10 +17,6 @@ use amethyst::{
     ui::{DrawUi, UiBundle},
     utils::application_root_dir,
 };
-
-
-
-
 
 
 
@@ -58,7 +56,8 @@ fn main() -> amethyst::Result<()> {
         )?
         .with_bundle(TransformBundle::new())?
         .with_bundle(input_bundle)?
-        .with_bundle(UiBundle::<String, String>::new())? 
+        .with_bundle(UiBundle::<String, String>::new())?
+        .with(systems::MoveSystem, "move_system", &[])
         ;
    
 
