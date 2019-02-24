@@ -13,7 +13,7 @@ use amethyst::{
     prelude::*,
     core::transform::TransformBundle,
     input::InputBundle,
-    renderer::{DisplayConfig, DrawFlat2D, Pipeline,  RenderBundle, Stage},
+    renderer::{ColorMask, DisplayConfig, DrawFlat2D, Pipeline,  RenderBundle, Stage, ALPHA},
     ui::{DrawUi, UiBundle},
     utils::application_root_dir,
 };
@@ -33,7 +33,7 @@ fn main() -> amethyst::Result<()> {
         .with_stage(
             Stage::with_backbuffer()
             .clear_target([0.0, 0.0, 0.0, 1.0], 1.0)
-            .with_pass(DrawFlat2D::new())
+            .with_pass( DrawFlat2D::new().with_transparency( ColorMask::all(), ALPHA, None ) )
             .with_pass(DrawUi::new())
         );
 
