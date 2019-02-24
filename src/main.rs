@@ -57,6 +57,7 @@ fn main() -> amethyst::Result<()> {
         .with_bundle(TransformBundle::new())?
         .with_bundle(input_bundle)?
         .with_bundle(UiBundle::<String, String>::new())?
+        .with(systems::ShipSystem, "ship_system", &[])
         .with(systems::MoveSystem, "move_system", &[])
         .with(systems::WrapSystem, "wrap_system", &["move_system"])
         .with(systems::UpdateSystem, "update_system", &["move_system", "wrap_system"])

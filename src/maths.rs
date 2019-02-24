@@ -22,7 +22,7 @@ pub fn angle_clamp( angle: f32 )->f32{
 /// Create a unit vector representing the given angle (in radians)
 pub fn vector_from_angle( angle: f32)->Vector2
 {
-    let vx = angle.sin();
+    let vx = -angle.sin();
     let vy = angle.cos();
     Vector2::new(vx, vy)
 }

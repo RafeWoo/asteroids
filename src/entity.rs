@@ -102,5 +102,6 @@ pub fn create_ship(world: &mut World)->Entity
         .with(transform)
         .with( mover )
         .with( systems::Wrapper )
+        .with( systems::Ship )
         .build()
 }

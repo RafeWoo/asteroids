@@ -57,6 +57,17 @@ impl Mover{
             rot_vel,
         }
     }
+
+    pub fn inc_orientation(&mut self, angle:f32)
+    {
+       self.angle_rad = angle_clamp( self.angle_rad + angle );
+    }
+
+    pub fn accelerate_forwards(&mut self, acceleration: f32)
+    {
+        let acc_vec = vector_from_angle( self.angle_rad) * acceleration;
+        self.vel += acc_vec;
+    }
 }
 
 impl Component for Mover {
