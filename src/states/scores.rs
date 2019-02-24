@@ -1,7 +1,7 @@
 //! ScoresState 
 //! Displays the 10 best scores
 //!  
-//! Can go to Start State after a time out
+//! Can go to Start State after a time out or to GameState
 
 use amethyst::{
     assets::{AssetStorage, Loader},
@@ -20,11 +20,12 @@ use std::time::{Duration, Instant};
 use crate::game_constants::{ ARENA_WIDTH, ARENA_HEIGHT,};
 
 use crate::states::{
-    StartState, 
+    StartState,
+    GameState,
 };
 
 pub struct ScoresState{
-
+     start_time: Instant,
 }
 
 impl ScoresState
@@ -33,7 +34,7 @@ impl ScoresState
     {
         ScoresState
         {
-
+            start_time: Instant::now(),
         }
     }
 }
@@ -64,7 +65,15 @@ impl SimpleState for ScoresState{
     
     fn fixed_update(&mut self, _data: StateData<'_, GameData<'_, '_>>) -> SimpleTrans
     {
-        Trans::None
+        //after thirty seconds transition to start
+        let mut transition = Trans::None;
+ 
+        if Instant::now().duration_since( self.start_time ) > Duration::from_secs(30)
+        {
+            transition = Trans::Switch( Box::new( StartState::new() ) );
+        }
+
+        transition
     }
 
     fn handle_event(&mut self, _data: StateData<'_, GameData<'_, '_>>, event: StateEvent) -> SimpleTrans 
@@ -75,7 +84,7 @@ impl SimpleState for ScoresState{
         if let StateEvent::Window(event) = &event {
             if is_key_down(&event, VirtualKeyCode::Return) {
                 
-                transition = Trans::Switch(Box::new(StartState::new()));
+                transition = Trans::Switch(Box::new(GameState::new()));
             }
         }
         
