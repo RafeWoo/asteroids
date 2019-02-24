@@ -1,3 +1,3 @@
 mod moving;
 
-pub use self::moving::{ Mover, MoveSystem,};
+pub use self::moving::{ Mover, MoveSystem, UpdateSystem, Wrapper, WrapSystem };

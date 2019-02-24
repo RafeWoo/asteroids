@@ -7,10 +7,12 @@ use amethyst::{
     ecs::prelude::*,
 };
 
-use std::f32::consts::PI;
 
 use crate::maths::*;
+use crate::game_constants::*;
 
+
+/////////////////////////////////////////////////////////////////////////////
 pub struct Mover
 {
     pos: Point2,
@@ -43,22 +45,32 @@ impl Component for Mover {
     type Storage = DenseVecStorage<Self>;
 }
 
+//////////////////////////////////////////////////////////////////
+// Wrapper component indicates that object should be wrapped on screen
+#[derive(Default)]
+pub struct Wrapper;
+
+impl Component for Wrapper {
+    type Storage = NullStorage<Self>;
+}
+
+//////////////////////////////////////////////////////////////////
+
 pub struct MoveSystem;
 
 impl<'s> System<'s> for MoveSystem {
     type SystemData = (
         WriteStorage<'s, Mover>,
-        WriteStorage<'s, Transform>,
         Read<'s, Time>,
     );
 
 
 
-    fn run(&mut self, (mut movers, mut locals, time): Self::SystemData) {
-        // Move every ball according to its speed, and the time passed.
-
+    fn run(&mut self, (mut movers, time): Self::SystemData) {
+        
         let delta = time.delta_seconds();
-        for (mover, local) in (&mut movers, &mut locals).join() {
+        
+        for mover in (&mut movers).join() {
 
             //update and clamp orientation
             mover.angle_rad = angle_clamp( mover.angle_rad + mover.rot_vel * delta);
@@ -67,12 +79,66 @@ impl<'s> System<'s> for MoveSystem {
             let offset =  mover.vel * delta;
             mover.pos += offset;
 
+        }
+        
+    }
+}
+
+//////////////////////////////////////////////////////////////////
+/// 
+pub struct UpdateSystem;
+
+impl<'s> System<'s> for UpdateSystem {
+    type SystemData = (
+        ReadStorage<'s, Mover>,
+        WriteStorage<'s, Transform>,
+    );
+
+
+    //Copy the Mover pos and orientation to the Transform
+    fn run(&mut self, ( movers, mut locals): Self::SystemData) {
+       
+        for (mover, local) in (&movers, &mut locals).join() {
+
             local.set_xyz( mover.pos.x, mover.pos.y , 0.0);
             local.set_rotation_euler(0.0, 0.0, mover.angle_rad);
-           // local.translate_x(ball.velocity[0] * time.delta_seconds());
-           // local.translate_y(ball.velocity[1] * time.delta_seconds());
-           // local.roll_local( time.delta_seconds() );
+     
         }
     }
 }
 
+//////////////////////////////////////////////////////////////////
+
+
+pub struct WrapSystem;
+
+impl<'s> System<'s> for WrapSystem {
+    type SystemData = (
+        ReadStorage<'s, Wrapper>,
+        WriteStorage<'s, Mover>,
+    );
+
+    //Copy the Mover pos and orientation to the Transform
+    fn run(&mut self, ( wrappers, mut movers): Self::SystemData) {
+       
+        for (_, mover) in (&wrappers, &mut movers).join() {
+
+            if mover.pos.x < 0.0 {
+                mover.pos.x += ARENA_WIDTH;
+            }
+            else if mover.pos.x > ARENA_WIDTH {
+                mover.pos.x -= ARENA_WIDTH;
+            }
+
+            if mover.pos.y < 0.0 {
+                mover.pos.y += ARENA_HEIGHT;
+            }
+            else if mover.pos.y > ARENA_HEIGHT {
+                mover.pos.y -= ARENA_HEIGHT;
+            }
+     
+        }
+    }
+}
+
+//////////////////////////////////////////////////////////////////

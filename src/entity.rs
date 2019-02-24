@@ -59,7 +59,8 @@ pub fn create_rock(world: &mut World , parent: Option<Entity>)->Entity
             .create_entity()
             .with(sprite_render)
             .with(transform)
-            .with( mover );
+            .with( mover )
+            .with( systems::Wrapper );
 
         if let Some( entity ) = parent{
             builder = builder.with( Parent{ entity } );
