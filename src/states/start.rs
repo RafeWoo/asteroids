@@ -21,6 +21,7 @@ use std::time::{Duration, Instant};
 use crate::game_constants::{ ARENA_WIDTH, ARENA_HEIGHT, COLOUR_WHITE};
 
 use crate::resources;
+use crate::entity;
 use crate::states::
 {
     GameState,
@@ -74,26 +75,11 @@ impl SimpleState for StartState{
 
         let message_entity = display_start_message(world);
         self.message = Some( message_entity.clone() );
-////////////////////////////////////////////////
-        let sprite_render = 
-        {
-           let bob =  world.read_resource::<resources::RocksResource>();
-    
-            SpriteRender {
-                sprite_sheet: bob.sprite_sheet.clone(),
-                sprite_number: 0, 
-            }
-        };
 
-        let mut transform = Transform::default();
-        transform.set_xyz(ARENA_HEIGHT * 0.5, ARENA_HEIGHT * 0.5, 0.0);
-
-         world
-        .create_entity()
-        .with(sprite_render)
-        .with(transform)
-        .with( Parent{ entity: message_entity} )
-        .build();
+        for _ in 0..4 {
+            entity::create_rock(world, Some(message_entity.clone()));   
+        }
+        
     }
 
     fn on_stop(&mut self, data: StateData<'_, GameData<'_, '_>>) {

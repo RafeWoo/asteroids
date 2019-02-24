@@ -21,21 +21,25 @@ use crate::resources;
 
 pub fn create_rock(world: &mut World , parent: Option<Entity>)->Entity
 {
+    let mut rng = rand::thread_rng();
+
         let sprite_render = 
         {
             let rocks =  world.read_resource::<resources::RocksResource>();
 
-            let mut rng = rand::thread_rng();
+            
             let rock_number = rng.gen_range(0,3);
 
             SpriteRender {
                 sprite_sheet: rocks.sprite_sheet.clone(),
-                sprite_number: 0, 
+                sprite_number: rock_number, 
             }
         };
 
         let mut transform = Transform::default();
-        transform.set_xyz(ARENA_HEIGHT * 0.5, ARENA_HEIGHT * 0.5, 0.0);
+        let x_pos = rng.gen_range(0., ARENA_WIDTH);
+        let y_pos = rng.gen_range(0., ARENA_HEIGHT);
+        transform.set_xyz(x_pos, y_pos, 0.0);
 
         let mut builder =  world
         .create_entity()
