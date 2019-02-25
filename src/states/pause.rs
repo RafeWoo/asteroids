@@ -10,7 +10,7 @@ use amethyst::{
     input::is_key_down,
     prelude::*,
     renderer::VirtualKeyCode,
-    ui::{Anchor, TtfFormat, UiText, UiTransform, FontHandle},
+    ui::{Anchor, UiText, UiTransform, FontHandle},
 };
 
 

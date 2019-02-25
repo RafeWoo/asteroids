@@ -4,18 +4,14 @@
 //! Can go to PausedState, StartState or NameEntry
 
 use amethyst::{
-    assets::{AssetStorage, Loader},
-    core::transform::Transform,
+    
     ecs::prelude::*, 
     input::is_key_down,
     prelude::*,
-    renderer::{
-        Camera, Flipped, PngFormat, Projection, SpriteRender, SpriteSheet,
-        SpriteSheetFormat, SpriteSheetHandle, Texture, TextureMetadata,VirtualKeyCode,
-    },
-    ui::{Anchor, TtfFormat, UiText, UiTransform, FontHandle},
+    renderer::{ VirtualKeyCode,},
+    ui::{Anchor, UiText, UiTransform, FontHandle},
 };
-//use std::time::{Duration, Instant};
+
 use std::vec::Vec;
 
 use crate::game_constants::*;

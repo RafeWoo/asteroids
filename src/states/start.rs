@@ -5,16 +5,11 @@
 
 
 use amethyst::{
-    assets::{AssetStorage, Loader},
-    core::transform::{ Transform, Parent, },
-    ecs::prelude::{Component, DenseVecStorage,Entity},
+    ecs::prelude::Entity,
     input::is_key_down,
     prelude::*,
-    renderer::{
-        Camera, Flipped, PngFormat, Projection, SpriteRender, SpriteSheet,
-        SpriteSheetFormat, SpriteSheetHandle, Texture, TextureMetadata,VirtualKeyCode,
-    },
-    ui::{Anchor, TtfFormat, UiText, UiTransform, FontHandle},
+    renderer::VirtualKeyCode,
+    ui::{Anchor, UiText, UiTransform, FontHandle},
 };
 use std::time::{Duration, Instant};
 

@@ -4,16 +4,11 @@
 //! Can go to Start State after a time out or to GameState
 
 use amethyst::{
-    assets::{Loader},
-    core::transform::Transform,
-    ecs::prelude::{Component, DenseVecStorage,Entity},
+    ecs::prelude::Entity,
     input::is_key_down,
     prelude::*,
-    renderer::{
-        Camera, Flipped, PngFormat, Projection, SpriteRender, SpriteSheet,
-        SpriteSheetFormat, SpriteSheetHandle, Texture, TextureMetadata,VirtualKeyCode,
-    },
-    ui::{Anchor, TtfFormat, UiText, UiTransform, FontHandle},
+    renderer::VirtualKeyCode,
+    ui::{Anchor, UiText, UiTransform, FontHandle},
 };
 use std::time::{Duration, Instant};
 
@@ -79,7 +74,7 @@ impl SimpleState for ScoresState{
     fn on_stop(&mut self, data: StateData<'_, GameData<'_, '_>>)
     {
         let world = data.world;
-        
+
         //delete all the game entities
         if let Some(entity) = self.message {
             world.delete_entity( entity ).expect("failed to delete loading screen");

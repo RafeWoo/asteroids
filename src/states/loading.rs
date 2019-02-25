@@ -8,17 +8,17 @@
 use amethyst::{
     assets::{AssetStorage, Loader},
     core::transform::Transform,
-    ecs::prelude::{Component, DenseVecStorage,Entity},
+    ecs::prelude::{Entity},
     prelude::*,
     renderer::{
-        Camera, Flipped, PngFormat, Projection, SpriteRender, SpriteSheet,
+        Camera, PngFormat, Projection, SpriteRender, SpriteSheet,
         SpriteSheetFormat, SpriteSheetHandle, Texture, TextureMetadata,
     },
-    ui::{Anchor, TtfFormat, UiText, UiTransform, FontHandle},
+    ui::TtfFormat,
 };
 use std::time::{Duration, Instant};
 
-use crate::game_constants::{ ARENA_WIDTH, ARENA_HEIGHT, COLOUR_WHITE};
+use crate::game_constants::{ ARENA_WIDTH, ARENA_HEIGHT};
 use crate::states::StartState;
 use crate::resources;
 
@@ -181,23 +181,5 @@ fn initialise_camera(world: &mut World) {
         .build();
 }
 
-
-
-
-/*
-
-
-//Create a ScoreBoard resource
-// ScoreEntry:10
-// lowest score 
-
-//create a default scoreboard
-//functionality to insert new entry
-
-//score entry 
-3 chars and a score
-
-
-*/
 
 
