@@ -2,19 +2,13 @@
 //! 
 
 use amethyst::{
-    assets::{AssetStorage, Loader},
     core::transform::{Transform, Parent,},
-    ecs::prelude::{Component, DenseVecStorage,Entity},
-    input::is_key_down,
+    ecs::prelude::{Entity},
     prelude::*,
-    renderer::{
-        Camera, Flipped, PngFormat, Projection, SpriteRender, SpriteSheet,
-        SpriteSheetFormat, SpriteSheetHandle, Texture, TextureMetadata,VirtualKeyCode,
-    },
-    ui::{Anchor, TtfFormat, UiText, UiTransform, FontHandle},
+    renderer::{ SpriteRender, },
 };
 
-use rand::{thread_rng, Rng};
+use rand::{Rng};
 use crate::game_constants::*;
 
 use crate::resources;

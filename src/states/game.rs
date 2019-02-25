@@ -22,7 +22,10 @@ use crate::game_constants::*;
 use crate::entity;
 use crate::systems::{Ship, Rock, Bullet,};
 
-use crate::resources::PlayerScore;
+use crate::resources::{
+    PlayerScore,
+    LeaderBoard,
+};
 use crate::states::{
     NameEntryState,
     PauseState,
@@ -256,6 +259,13 @@ impl SimpleState for GameState{
             player_score.reset();
         }
 
+/*
+        {
+            let mut scores = world.write_resource::<LeaderBoard>();
+            scores.add_entry(110000, ['W','O','O'],);
+        }
+        */
+
         self.init_ui(world); 
 
         self.start_new_level(world);
@@ -292,12 +302,20 @@ impl SimpleState for GameState{
             self.update_lives(world);
             if self.lives <= 0 {
 
-                //if new high score
+                
+                let player_score = world.read_resource::<PlayerScore>().score();
+        
+                let scores = world.read_resource::<LeaderBoard>();
+                if scores.has_entry(player_score)
+                {
                     //then transition to name entry
-                    //transition = Trans::Switch(Box::new( NameEntryState::new() ));
-                //else 
+                    transition = Trans::Switch(Box::new( NameEntryState::new() ));
+                }
+                else
+                { 
                     //transiition to start screen 
                     transition = Trans::Switch(Box::new( StartState::new() ));
+                }
             }
             else{
                 //respawn

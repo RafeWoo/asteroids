@@ -6,7 +6,7 @@ use amethyst::{
     ecs::prelude::*,
 };
 
-use std::time::{Duration, Instant};
+use std::time::{Duration};
 use std::vec::Vec;
 
 use crate::resources::PauseFlag;

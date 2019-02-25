@@ -56,6 +56,7 @@ impl SimpleState for LoadingState{
         initialise_camera(world);
        
         world.add_resource( resources::PauseFlag::new() );
+        world.add_resource( resources::LeaderBoard::default() );
     }
 
     fn on_stop(&mut self, data: StateData<'_, GameData<'_, '_>>){
@@ -71,7 +72,7 @@ impl SimpleState for LoadingState{
     {
         let mut transition = Trans::None;
  
-        if Instant::now().duration_since( self.start_time ) > Duration::from_secs(5)
+        if Instant::now().duration_since( self.start_time ) > Duration::from_secs(3)
         {
             transition = Trans::Switch( Box::new( StartState::new() ) );
         }
