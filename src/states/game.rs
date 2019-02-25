@@ -22,7 +22,7 @@ use crate::game_constants::*;
 use crate::entity;
 use crate::systems::{Ship, Rock, Bullet,};
 
-//use crate::resources::RocksResource;
+use crate::resources::PlayerScore;
 use crate::states::{
     NameEntryState,
     PauseState,
@@ -60,8 +60,10 @@ impl GameState{
     {
         entity::create_ship(world);
         
-        for _ in 0..4 {
-            entity::create_rock(world, 100. , None);
+        let max_speed = 50.0 + 10.0 * self.level as f32;
+        let num_rocks = self.level+3;
+        for _ in 0..num_rocks{
+            entity::create_rock(world, max_speed, None);
         }
     }
 
@@ -226,6 +228,19 @@ impl GameState{
         }
     }
 
+    fn update_score(&self, world: &mut World)
+    {
+        let score = world.read_resource::<PlayerScore>();
+        let mut ui_texts = world.write_storage::<UiText>();
+
+        if let Some(e) = self.score_num {
+            if let Some(text) = ui_texts.get_mut( e ) {
+                text.text = score.score().to_string();
+            }
+        }
+    }
+
+
 }
 
 
@@ -235,6 +250,11 @@ impl SimpleState for GameState{
 
     fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
         let world = data.world;
+
+        {
+            let mut player_score = world.write_resource::<PlayerScore>();
+            player_score.reset();
+        }
 
         self.init_ui(world); 
 
@@ -256,6 +276,9 @@ impl SimpleState for GameState{
     {
         let mut transition = Trans::None;
         let world = data.world;
+
+
+        self.update_score(world);
 
         let ship_count = {
             let ships = world.read_storage::<Ship>();

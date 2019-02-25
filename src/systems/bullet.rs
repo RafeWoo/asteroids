@@ -1,7 +1,6 @@
 //! Bullet system
 //! 
 use amethyst::{
-    core::timing::Time,
     core::transform::Transform,
     ecs::prelude::*,
     input::InputHandler,
@@ -161,5 +160,3 @@ fn spawn_bullet<'s>( pos: Point2, vel: Vector2, angle: f32,
         .build()
 }
 //////////////////////////////////////////////////////////
-
-pub struct BulletSystem;

@@ -63,7 +63,7 @@ pub fn create_rock(world: &mut World , max_speed: f32, parent: Option<Entity>)->
             .with(transform)
             .with( mover )
             .with( systems::Wrapper )
-            .with( systems::Rock )
+            .with( systems::Rock::Big )
             .with( systems::Bound::new( ROCK_RADIUS_BIG ) )
             ;
 

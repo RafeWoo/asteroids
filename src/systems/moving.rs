@@ -78,6 +78,10 @@ impl Mover{
     {
         self.pos
     }
+
+    //pub fn velocity(&self)->Vector2{
+    //    self.vel
+    //}
 }
 
 impl Component for Mover {

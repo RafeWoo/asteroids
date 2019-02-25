@@ -18,9 +18,8 @@ use amethyst::{
 };
 use std::time::{Duration, Instant};
 
-use crate::game_constants::{ ARENA_WIDTH, ARENA_HEIGHT, COLOUR_WHITE};
+use crate::game_constants::{ COLOUR_WHITE};
 
-use crate::resources;
 use crate::entity;
 use crate::states::
 {
