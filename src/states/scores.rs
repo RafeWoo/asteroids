@@ -4,7 +4,7 @@
 //! Can go to Start State after a time out or to GameState
 
 use amethyst::{
-    core::transform::{Transform, Parent,},
+    core::transform::{ Parent,},
     ecs::prelude::Entity,
     input::is_key_down,
     prelude::*,
@@ -67,6 +67,20 @@ fn display_scores(world: &mut World, parent: Entity)
 
     for i in 0..10 {
 
+        let colour = if let Some(new_entry_index) = leaderboard.new_entry_index() {
+            if i == new_entry_index {
+                COLOUR_RED
+            }
+            else
+            {
+                COLOUR_WHITE
+            }
+        }
+        else
+        {
+            COLOUR_WHITE
+        };
+
 
         let score_transform = UiTransform::new(
             i.to_string(), Anchor::TopMiddle,
@@ -79,13 +93,11 @@ fn display_scores(world: &mut World, parent: Entity)
             .with( UiText::new(
                 font_handle.clone(),
                 leaderboard.score_at(i).to_string(),
-                COLOUR_WHITE,
+                colour,
                 FONT_SIZE,
             )).build();
 
 
-
-    
         let name_transform = UiTransform::new(
             i.to_string(), Anchor::TopMiddle,
             -100., -150. - 50.0 * (i as f32), 1., 200., 50., 0,
@@ -96,7 +108,7 @@ fn display_scores(world: &mut World, parent: Entity)
             .with( UiText::new(
                 font_handle.clone(),
                 leaderboard.name_at(i),
-                COLOUR_WHITE,
+                colour,
                 FONT_SIZE,
             )).build();
             
@@ -126,6 +138,12 @@ impl SimpleState for ScoresState{
         if let Some(entity) = self.message {
             world.delete_entity( entity ).expect("failed to delete loading screen");
             self.message = None;
+        }
+
+        //clear new entry index state when we leave
+        {
+            let mut leaderboard = world.write_resource::<LeaderBoard>();
+            leaderboard.clear_new_entry_index();
         }
         println!("Leaving scores state");
     }

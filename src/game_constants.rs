@@ -6,6 +6,7 @@ pub const ARENA_WIDTH: f32 = 1000.0;
 
 
 pub const COLOUR_WHITE: [f32; 4] = [1.,1.,1.,1.];
+pub const COLOUR_RED: [f32; 4] = [1.,0.,0.,1.];
 
 /// area around middle of screen where rocks should not be generated
 pub const EXCLUSION_ZONE_RADIUS: f32 = 150.0;

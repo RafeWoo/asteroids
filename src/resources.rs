@@ -95,10 +95,13 @@ impl LeaderBoard
 
             let new_entry = LeaderboardEntry{ score, initials};
 
-            let mut to_sort = self.entries.to_vec();
-            to_sort.push( new_entry );
-            to_sort.sort();
+            
+            let insert_index = self.entries.iter().enumerate().find_map(|(i,e)| if e.score > score { None }else {Some(i)});
+            self.new_entry_index = insert_index;
 
+            let mut to_sort = self.entries.to_vec();
+            to_sort.insert(insert_index.unwrap(), LeaderboardEntry{score, initials});
+         
             self.entries.copy_from_slice( &to_sort[0..10]);
             self.min_score = self.entries[9].score;
         }
@@ -106,6 +109,14 @@ impl LeaderBoard
 
     pub fn has_entry(&self, score: u32)->bool{
         score > self.min_score
+    }
+
+    pub fn new_entry_index(&self)->Option<usize>{
+        self.new_entry_index
+    }
+    pub fn clear_new_entry_index(&mut self)
+    {
+        self.new_entry_index = None;
     }
 
     pub fn score_at(&self, index:usize)->u32{
