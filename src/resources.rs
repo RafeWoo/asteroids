@@ -100,7 +100,7 @@ impl LeaderBoard
             self.new_entry_index = insert_index;
 
             let mut to_sort = self.entries.to_vec();
-            to_sort.insert(insert_index.unwrap(), LeaderboardEntry{score, initials});
+            to_sort.insert(insert_index.unwrap(), new_entry);
          
             self.entries.copy_from_slice( &to_sort[0..10]);
             self.min_score = self.entries[9].score;

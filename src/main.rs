@@ -15,7 +15,7 @@ use amethyst::{
     input::InputBundle,
     renderer::{ColorMask, DisplayConfig, DrawFlat2D, Pipeline,  RenderBundle, Stage, ALPHA},
     ui::{DrawUi, UiBundle},
-    utils::application_root_dir,
+    //utils::application_root_dir,
 };
 
 

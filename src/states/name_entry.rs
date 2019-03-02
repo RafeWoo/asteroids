@@ -15,7 +15,7 @@ use amethyst::{
     renderer::{ VirtualKeyCode,},
     ui::{Anchor, UiText, UiTransform, FontHandle},
 };
-use std::time::Instant;
+
 use std::char;
 
 use crate::game_constants::*;
@@ -27,7 +27,6 @@ use crate::states::{
 
 
 pub struct NameEntryState {
-    start_time: Instant,
     message: Option<Entity>,
     initials: [char;3],
     current: usize,
@@ -40,7 +39,6 @@ impl NameEntryState {
     pub fn new()->NameEntryState
     {
         NameEntryState{
-            start_time: Instant::now(),
             message: None,
             initials: ['A', 'A', 'A'],
             current: 0,
@@ -176,7 +174,7 @@ impl SimpleState for NameEntryState {
     
     fn fixed_update(&mut self, data: StateData<'_, GameData<'_, '_>>) -> SimpleTrans
     {
-        let mut transition = Trans::None;
+        let transition = Trans::None;
  
         let world = data.world;
        
