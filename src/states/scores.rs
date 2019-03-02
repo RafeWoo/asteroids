@@ -4,6 +4,7 @@
 //! Can go to Start State after a time out or to GameState
 
 use amethyst::{
+    core::transform::{Transform, Parent,},
     ecs::prelude::Entity,
     input::is_key_down,
     prelude::*,
@@ -13,7 +14,7 @@ use amethyst::{
 use std::time::{Duration, Instant};
 
 use crate::game_constants::*;
-
+use crate::resources::LeaderBoard;
 use crate::states::{
     StartState,
     GameState,
@@ -41,21 +42,65 @@ fn display_message(world: &mut World)->Entity
     let font_handle = world.read_resource::<FontHandle>().clone();
         
     let message_transform = UiTransform::new(
-        "MESSAGE".to_string(), Anchor::Middle,
-        0., 0., 1., 
-        600., 100., 
-        0,
+        "MESSAGE".to_string(), Anchor::TopMiddle,
+        0., -50., 1., 200., 50., 0,
     );
   
 
+    const FONT_SIZE: f32 = 30.0;
     world.create_entity()
         .with( message_transform )
         .with( UiText::new(
             font_handle,
-            "HI SCORES - TODO".to_string(),
+            "HI SCORES".to_string(),
             COLOUR_WHITE,
-            50.,
+            FONT_SIZE,
         )).build()
+}
+
+fn display_scores(world: &mut World, parent: Entity)
+{
+    let font_handle = world.read_resource::<FontHandle>().clone();
+      const FONT_SIZE: f32 = 30.0;
+
+    let leaderboard = world.read_resource::<LeaderBoard>().clone();
+
+    for i in 0..10 {
+
+
+        let score_transform = UiTransform::new(
+            i.to_string(), Anchor::TopMiddle,
+            100., -150. - 50.0 * (i as f32), 1., 200., 50., 0,
+        );
+
+        world.create_entity()
+            .with( score_transform )
+            .with( Parent{entity:parent} )
+            .with( UiText::new(
+                font_handle.clone(),
+                leaderboard.score_at(i).to_string(),
+                COLOUR_WHITE,
+                FONT_SIZE,
+            )).build();
+
+
+
+    
+        let name_transform = UiTransform::new(
+            i.to_string(), Anchor::TopMiddle,
+            -100., -150. - 50.0 * (i as f32), 1., 200., 50., 0,
+        );
+        world.create_entity()
+            .with( name_transform )
+            .with( Parent{entity:parent} )
+            .with( UiText::new(
+                font_handle.clone(),
+                leaderboard.name_at(i),
+                COLOUR_WHITE,
+                FONT_SIZE,
+            )).build();
+            
+    }
 }
 
 impl SimpleState for ScoresState{
@@ -68,6 +113,8 @@ impl SimpleState for ScoresState{
         let message_entity = display_message(world);
         self.message = Some( message_entity.clone() );
 
+
+        display_scores( world, message_entity);
         println!("Entered scores state");
     }
 

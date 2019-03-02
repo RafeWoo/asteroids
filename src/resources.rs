@@ -79,13 +79,13 @@ impl PartialEq for LeaderboardEntry {
     }
 }
 
+#[derive(Copy,Clone)]
 pub struct LeaderBoard
 {
     entries : [LeaderboardEntry; 10],
     min_score: u32,
     new_entry_index: Option<usize>,
 }
-
 
 impl LeaderBoard
 {
@@ -106,6 +106,18 @@ impl LeaderBoard
 
     pub fn has_entry(&self, score: u32)->bool{
         score > self.min_score
+    }
+
+    pub fn score_at(&self, index:usize)->u32{
+        self.entries[index].score
+    }
+    pub fn name_at(&self, index:usize)->String{
+        let mut name = String::new();
+        for initial in &self.entries[index].initials {
+            name.push( *initial);
+            name.push('.');
+        }
+        name
     }
 }
 
