@@ -1,0 +1,6 @@
+//rename branch
+git branch -m oldbranch newbranch
+
+//sync with remote
+git pull origin branchname
+git push origin branchname
